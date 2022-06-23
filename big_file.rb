@@ -1,6 +1,8 @@
 MARC_NS = 'http://www.loc.gov/MARC21/slim'
 XML_PATH =  'big_file.xml'
 
+require 'byebug'
+require 'memory_profiler'
 require 'nokogiri'
 require 'rubygems/package'
 require 'securerandom'
@@ -8,18 +10,19 @@ require 'stringio'
 
 def process
   filenames = []
-  gzips = (1..50).map do |index|
+  clean_directory
+  gzips = (1..20).map do |index|
     xml = Nokogiri::XML(File.read(XML_PATH))
-    gzip enhance(xml)
+    gzip xml
   end
-  write_files(gzips)
-  cleanup
+  write_files gzips
 end
 
 def enhance(xml)
+  MemoryProfiler.start
   subfield = title_subfield(xml).first
   subfield.content = "#{SecureRandom.hex} #{subfield.content}"
-  byebug
+  MemoryProfiler.stop.pretty_print
   xml.to_s
 end
 
@@ -41,7 +44,7 @@ def gzip(contents)
   io
 end
 
-def cleanup
+def clean_directory
   `rm temp*`
 end
 
