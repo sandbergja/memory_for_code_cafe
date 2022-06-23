@@ -1,8 +1,6 @@
 MARC_NS = 'http://www.loc.gov/MARC21/slim'
 XML_PATH =  'big_file.xml'
 
-require 'byebug'
-require 'memory_profiler'
 require 'nokogiri'
 require 'rubygems/package'
 require 'securerandom'
@@ -19,10 +17,8 @@ def process
 end
 
 def enhance(xml)
-  MemoryProfiler.start
   subfield = title_subfield(xml).first
   subfield.content = "#{SecureRandom.hex} #{subfield.content}"
-  MemoryProfiler.stop.pretty_print
   xml.to_s
 end
 
