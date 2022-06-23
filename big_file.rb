@@ -23,13 +23,19 @@ def enhance(xml)
 end
 
 def write_files(contents)
-  contents.each_with_index do |io, index|
-    output_filename = "temp_#{index}.gz"
-    File.open(output_filename, 'w') do |file|
-      file.puts io.string
-    end
+  contents.each_with_index { |io, index| write_file(io, index) }
+  print_report(contents.count)
+end
+
+def write_file(io, index)
+  output_filename = "temp_#{index}.gz"
+  File.open(output_filename, 'w') do |file|
+    file.puts io.string
   end
-  puts "#{contents.count} files processed"
+end
+
+def print_report(count)
+  puts "#{count} files processed"
 end
 
 def gzip(contents)
