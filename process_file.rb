@@ -1,25 +1,28 @@
 MARC_NS = 'http://www.loc.gov/MARC21/slim'
-XML_PATH =  'big_file.xml'
 
-require 'nokogiri'
+require 'memory_profiler'
+require 'ox'
 require 'rubygems/package'
 require 'securerandom'
 require 'stringio'
+require 'zlib'
 
 def process
+  MemoryProfiler.start
   filenames = []
   clean_directory
-  gzips = (1..20).map do |index|
-    xml = Nokogiri::XML(File.read(XML_PATH))
-    gzip xml
+  gzips = (1..5).map do |index|
+    xml = Ox.parse(File.read('little_file.xml'))
+    write_file gzip(enhance(xml)), index
   end
-  write_files gzips
+  MemoryProfiler.stop.pretty_print
+  print_report(gzips.count)
 end
 
 def enhance(xml)
   subfield = title_subfield(xml).first
-  subfield.content = "#{SecureRandom.hex} #{subfield.content}"
-  xml.to_s
+  subfield.replace_text "#{SecureRandom.hex} #{subfield.text}"
+  Ox.dump xml
 end
 
 def write_files(contents)
@@ -51,7 +54,7 @@ def clean_directory
 end
 
 def title_subfield(xml)
-  xml.xpath('//marc:datafield[@tag="245"]/marc:subfield[@code="a"]', 'marc' => MARC_NS)
+  xml.root.locate('*/datafield[@tag=245]/subfield[@code=a]')
 end
 
 process
