@@ -1,16 +1,16 @@
 MARC_NS = 'http://www.loc.gov/MARC21/slim'
-XML_PATH =  'big_file.xml'
 
 require 'nokogiri'
 require 'rubygems/package'
 require 'securerandom'
 require 'stringio'
+require 'zlib'
 
 def process
   filenames = []
   clean_directory
   gzips = (1..20).map do |index|
-    xml = Nokogiri::XML(File.read(XML_PATH))
+    xml = Nokogiri::XML(File.read('little_file.xml'))
     gzip xml
   end
   write_files gzips
