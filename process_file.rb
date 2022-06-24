@@ -11,7 +11,7 @@ def process
   clean_directory
   gzips = (1..20).map do |index|
     xml = Nokogiri::XML(File.read('little_file.xml'))
-    gzip xml
+    gzip enhance(xml)
   end
   write_files gzips
 end
