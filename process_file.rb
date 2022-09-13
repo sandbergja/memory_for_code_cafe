@@ -6,11 +6,17 @@ require 'securerandom'
 require 'stringio'
 require 'zlib'
 
+# Very contrived example:
+# It reads a file 20 times,
+# each time adding an "enhancement"
+# of dubious quality.
+# It then compresses the files
+# and leaves them in this directory
 def process
   filenames = []
   clean_directory
   gzips = (1..20).map do |index|
-    xml = Nokogiri::XML(File.read('little_file.xml'))
+    xml = Nokogiri::XML(File.read("big_file_#{index}.xml"))
     gzip enhance(xml)
   end
   write_files gzips
