@@ -38,3 +38,14 @@ Helpful areas:
 
 rack_mini_profiler also gives you access to the memory_profiler!  For use in a rails app:
 `bundle add memory_profiler rack_mini_profiler`, then add ?pp=profile-memory to the URL you want to check
+
+## getting a quick vm to demo this
+
+```
+docker run -it --oom-kill-disable -m 256M ubuntu:22.04
+apt-get update && apt-get install -y ruby ruby-dev gcc make git
+gem install bundler
+git clone https://github.com/sandbergja/memory_for_code_cafe
+cd memory_for_code_cafe
+bundle
+```
